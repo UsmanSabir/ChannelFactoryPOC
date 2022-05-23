@@ -29,7 +29,6 @@ internal class ProxyDecorator<T> : DispatchProxy where T : IBusinessService
         }
         catch (TargetInvocationException exc)
         {
-            // If the MethodInvoke.Invoke call fails, log a warning and then rethrow the exception
             //_logger.Warning(exc.InnerException, "Method {TypeName}.{MethodName} threw exception: {Exception}", targetMethod.DeclaringType.Name, targetMethod.Name, exc.InnerException);
 
             throw exc.InnerException;
@@ -37,7 +36,7 @@ internal class ProxyDecorator<T> : DispatchProxy where T : IBusinessService
     }
 
 
-    public static T Decorate(IServiceProvider serviceProvider, string serviceId, T? target = default)
+    public static T Decorate(IServiceProvider serviceProvider, string serviceId) //, T? target = default
     {
         var proxy = Create<T, ProxyDecorator<T>>();
             //as ProxyDecorator<T>;
