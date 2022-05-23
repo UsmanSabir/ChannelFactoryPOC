@@ -1,6 +1,7 @@
 using CustomChannelFactory.Abstraction;
 using CustomChannelFactory.DomainServices;
 using CustomChannelFactory.DomainServices.Impl;
+using CustomChannelFactory.Helpers;
 using CustomChannelFactory.Impl;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +12,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddScoped<IClientFactory, DemoClientFactory>();
-builder.Services.AddScoped<IContractService, ContractService>();
+
+////direct dll reference
+//builder.Services.AddScoped<IContractService, ContractService>();
+//or client service reference
+builder.Services.RegisterAsServiceClient<IContractService>("UMS"); //todo: serviceId enum value
+
 
 var app = builder.Build();
 
