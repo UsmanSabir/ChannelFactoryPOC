@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using CustomChannelFactory.Abstraction;
+using CustomChannelFactory.DomainServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CustomChannelFactory.Controllers
@@ -13,14 +16,21 @@ namespace CustomChannelFactory.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        IClientFactory _clientFactory;
+
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IClientFactory clientFactory)
         {
             _logger = logger;
+            _clientFactory = clientFactory;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
+            var contractService = _clientFactory.CreateClient<IContractService>();
+            var sum = contractService.Sum(2,4);
+            Debug.WriteLine(sum);
+
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),

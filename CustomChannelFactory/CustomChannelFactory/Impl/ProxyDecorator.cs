@@ -26,14 +26,14 @@ internal class ProxyDecorator<T> : DispatchProxy where T : IBusinessService
     }
 
 
-    public static T Decorate(T? target = default)
+    public static T Decorate(IServiceProvider serviceProvider, T? target = default)
     {
         var proxy = Create<T, ProxyDecorator<T>>();
             //as ProxyDecorator<T>;
 
             var proxyDecorator = (proxy as ProxyDecorator<T>);
             if (proxyDecorator != null)
-                proxyDecorator.Target = target; // ?? Activator.CreateInstance<T>();//todo: Use DI
+                proxyDecorator.Target = target ?? serviceProvider.GetRequiredService<T>();// Activator.CreateInstance<T>();
 
             return proxy;
     }

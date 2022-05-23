@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Folder Include="Abstraction\" />
+    <Folder Include="DomainServices\Impl\" />
   </ItemGroup>
 
 </Project>
