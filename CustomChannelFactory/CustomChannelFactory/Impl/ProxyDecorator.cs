@@ -9,8 +9,8 @@ internal class ProxyDecorator<T> : DispatchProxy where T : IBusinessService
 {
     //public T Target { get; private set; } //todo
 
-    private string _serviceId;
-    IHttpClientFactory _httpClientFactory;
+    private string _serviceId = null!;
+    IHttpClientFactory _httpClientFactory = null!;
 
     protected override object? Invoke(MethodInfo? targetMethod, object?[]? args)
     {
@@ -27,8 +27,9 @@ internal class ProxyDecorator<T> : DispatchProxy where T : IBusinessService
                 //something wrong
                 throw new InvalidOperationException($"Base uri not set for service identity '{_serviceId}'");
             }
-            var serviceName = typeof(T).Name;
+            var serviceName = typeof(T).Name.TrimStart('I');
             var serviceEndpoint = $"api/{serviceName}Host";
+            
             try
             {
                 var response = httpClient.PostAsJsonAsync(serviceEndpoint, new RequestModel())

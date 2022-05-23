@@ -14,6 +14,11 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IClientFactory, DemoClientFactory>();
 
 builder.Services.AddHttpClient();
+builder.Services.AddHttpClient("UMS", client =>
+{
+    client.BaseAddress = new Uri("http://localhost");
+});
+
 ////direct dll reference
 //builder.Services.AddScoped<IContractService, ContractService>();
 //or client service reference
