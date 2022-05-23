@@ -12,7 +12,7 @@ internal class ProxyDecorator<T> : DispatchProxy where T : IBusinessService
     private string _serviceId;
     IHttpClientFactory _httpClientFactory;
 
-    protected override async Task<object?> Invoke(MethodInfo? targetMethod, object?[]? args)
+    protected override object? Invoke(MethodInfo? targetMethod, object?[]? args)
     {
         try
         {
@@ -21,16 +21,32 @@ internal class ProxyDecorator<T> : DispatchProxy where T : IBusinessService
             //return result;
 
             //route to _serviceId url
-            //var httpClient = _httpClientFactory.CreateClient(_serviceId);
-            //var response = await httpClient.PostAsJsonAsync("endpoint", new RequestModel());
-            //if (response.IsSuccessStatusCode)
-            //{
-            //    var responseModel = await response.Content.ReadFromJsonAsync<ResponseModel>();
-            //    if (responseModel != null)
-            //    {
-            //        //response model
-            //    }
-            //}
+            var httpClient = _httpClientFactory.CreateClient(_serviceId);
+            if (string.IsNullOrWhiteSpace(httpClient?.BaseAddress?.AbsoluteUri))
+            {
+                //something wrong
+                throw new InvalidOperationException($"Base uri not set for service identity '{_serviceId}'");
+            }
+            var serviceName = typeof(T).Name;
+            var serviceEndpoint = $"api/{serviceName}Host";
+            try
+            {
+                var response = httpClient.PostAsJsonAsync(serviceEndpoint, new RequestModel())
+                    .Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseModel = response.Content.ReadFromJsonAsync<ResponseModel>().Result;
+                    if (responseModel != null)
+                    {
+                        //response model
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                
+            }
 
             var json = JsonSerializer.Serialize(args);
             Debug.WriteLine(json);

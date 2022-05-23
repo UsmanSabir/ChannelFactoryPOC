@@ -13,6 +13,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddScoped<IClientFactory, DemoClientFactory>();
 
+builder.Services.AddHttpClient();
 ////direct dll reference
 //builder.Services.AddScoped<IContractService, ContractService>();
 //or client service reference
