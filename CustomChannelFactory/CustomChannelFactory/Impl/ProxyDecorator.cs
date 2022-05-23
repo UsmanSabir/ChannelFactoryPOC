@@ -10,8 +10,9 @@ internal class ProxyDecorator<T> : DispatchProxy where T : IBusinessService
     //public T Target { get; private set; } //todo
 
     private string _serviceId;
+    IHttpClientFactory _httpClientFactory;
 
-    protected override object? Invoke(MethodInfo? targetMethod, object?[]? args)
+    protected override async Task<object?> Invoke(MethodInfo? targetMethod, object?[]? args)
     {
         try
         {
@@ -20,6 +21,16 @@ internal class ProxyDecorator<T> : DispatchProxy where T : IBusinessService
             //return result;
 
             //route to _serviceId url
+            //var httpClient = _httpClientFactory.CreateClient(_serviceId);
+            //var response = await httpClient.PostAsJsonAsync("endpoint", new RequestModel());
+            //if (response.IsSuccessStatusCode)
+            //{
+            //    var responseModel = await response.Content.ReadFromJsonAsync<ResponseModel>();
+            //    if (responseModel != null)
+            //    {
+            //        //response model
+            //    }
+            //}
 
             var json = JsonSerializer.Serialize(args);
             Debug.WriteLine(json);
@@ -46,9 +57,18 @@ internal class ProxyDecorator<T> : DispatchProxy where T : IBusinessService
             {
                 //    proxyDecorator.Target = target ?? serviceProvider.GetRequiredService<T>();// Activator.CreateInstance<T>();
                 proxyDecorator._serviceId = serviceId;
+                proxyDecorator._httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
             }
 
             return proxy;
     }
 
+}
+
+internal class RequestModel
+{
+}
+
+internal class ResponseModel
+{
 }
